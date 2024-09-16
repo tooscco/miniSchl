@@ -17,7 +17,7 @@ if(isset($_GET['route'])){
 }
 
 $sup=$_SESSION['supervisor_id'];
-$id=$_SESSION['student_id'];
+// $id=$_SESSION['student_id'];    
 // print_r($id);
 
 $query="SELECT * FROM student_table WHERE supervisor_id=?";
@@ -50,35 +50,59 @@ if(isset($_POST['submit_del'])){
     }
 }
 
-$editstu = [];
+// php for the edit_btn
 
-if(isset($_POST['submit_id'])){
-    echo $_SESSION['student_id']= $_POST['student_id'];
-    $edit=$_SESSION['student_id'];
-    $query="SELECT * FROM student_table WHERE student_id =$edit ";
-    $dbstudent=$minischl->query($query);
-    // print_r($dbnote);
-    if($dbstudent->num_rows>0){
-        $editstu=$dbstudent->fetch_assoc();
-        $showModal = true;
-        // print_r($editnote);
-    }
-    else{
-        echo "Data not found";
-        $showModal = false;
-    }
+// $editstu = [];
 
-}
+// if(isset($_POST['submit_id'])){
+//     echo $_SESSION['student_id']= $_POST['student_id'];
+//     $edit=$_SESSION['student_id'];
+//     $query="SELECT * FROM student_table WHERE student_id =$edit ";
+//     $dbstudent=$minischl->query($query);
+//     // print_r($dbnote);
+//     if($dbstudent->num_rows>0){
+//         $editstu=$dbstudent->fetch_assoc();
+//         $showModal = true;
+//         // print_r($editnote);
+//     }
+//     else{
+//         echo "Data not found";
+//         $showModal = false;
+//     }
+
+// }
+
+
+    //php for the edit_modal
+
+// if(isset($_POST['submit_note'])){
+//     $edit=$_SESSION['student_id'];
+//     $fnamesec=$minischl->real_escape_string($_POST['firstnametwo']);
+//     $lname=$minischl->real_escape_string($_POST['lastnametwo']);
+//     $matric=$minischl->real_escape_string($_POST['matrictwo']);
+//     $department=$minischl->real_escape_string($_POST['departtwo']);
+//     $email=$minischl->real_escape_string($_POST['emailtwo']);
+
+//     $query="UPDATE `student_table` SET `firstname`= '$fnamesec' , `lastname`= '$lname', `matric_no`='$matric', `department`='$department', `email`='$email' WHERE `student_id` =$edit";
+//     $dbcon=$minischl->query($query);
+//     if($dbcon){
+//         echo 'working';
+//     }
+//     else{
+//         echo 'not working'.$minischl->error;
+//     }
+// }
+
 
 if(isset($_POST['submit_note'])){
-    $edit=$_SESSION['student_id'];
-    $fnamesec=$minischl->real_escape_string($_POST['firstnametwo']);
-    $lname=$minischl->real_escape_string($_POST['lastnametwo']);
-    $matric=$minischl->real_escape_string($_POST['matrictwo']);
-    $department=$minischl->real_escape_string($_POST['departtwo']);
-    $email=$minischl->real_escape_string($_POST['emailtwo']);
+    $fnamesec=$_POST['firstnametwo'];
+    $lname=$_POST['lastnametwo'];
+    $matric=$_POST['matrictwo'];
+    $department=$_POST['departtwo'];
+    $email=$_POST['emailtwo'];
+    $id=$_POST['student_id'];
 
-    $query="UPDATE `student_table` SET `firstname`= '$fnamesec' , `lastname`= '$lname', `matric_no`='$matric', `department`='$department', `email`='$email' WHERE `student_id` =$edit";
+    $query="UPDATE `student_table` SET `firstname`= '$fnamesec' , `lastname`= '$lname', `matric_no`='$matric', `department`='$department', `email`='$email' WHERE `student_id` =$id";
     $dbcon=$minischl->query($query);
     if($dbcon){
         echo 'working';
@@ -140,8 +164,8 @@ if(isset($_POST['submit_note'])){
         </div>
     </div> 
 
-    <!-- Modal -->
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method='POST'>
+    <!-- Modal for the Edit btn -->
+<!-- <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method='POST'>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content w-75 h-75">
@@ -175,7 +199,10 @@ if(isset($_POST['submit_note'])){
             myModal.show();
         });
     </script>
-<?php endif; ?>
+<?php endif; ?> -->
+
+
+
 
     <div class="d-flex justify-content-between mx-4">
         <div>
@@ -213,10 +240,17 @@ if(isset($_POST['submit_note'])){
                  <td><?php echo htmlspecialchars ($user['department']); ?></td>
                  <td><?php echo htmlspecialchars ($user['email']); ?></td>
 
-                 <td><form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST">
+                 <td>
+                    <!-- Edit btn -->
+
+                    <!-- <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST">
                     <input type="hidden" name="student_id" value="<?php echo $user['student_id'];?>">
                     <button type="submit" name="submit_id" class="btn btn-success">Edit</button>
-                 </form>
+                 </form> -->
+
+                 <!-- Or -->
+                 
+                 <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal-<?php echo $user['student_id'];?>" class="btn btn-success">Edit</button>
                 </td>
 
                  <td>
@@ -226,6 +260,36 @@ if(isset($_POST['submit_note'])){
                 </form>
                 </td>
                  </tr>
+
+                 <!-- Modal -->
+<div class="modal fade" id="exampleModal-<?php echo $user['student_id'];?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Student Details</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method='POST'>
+      <div class="modal-body">
+                    <input type="hidden" name="student_id" value="<?php echo $user['student_id'];?>">
+                    <input type="text" placeholder="Firstname" class="form-control mb-4 shadow-none" name="firstnametwo" value="<?php echo $user['firstname']; ?>" required>
+
+                    <input placeholder="Lastname" name="lastnametwo" class="form-control shadow-none mb-3" value="<?php echo $user['lastname']; ?>" required>
+
+                    <input placeholder="Lastname" name="matrictwo" class="form-control shadow-none mb-3" value="<?php echo $user['matric_no']; ?>" required>
+                    
+                    <input placeholder="Lastname" name="departtwo" class="form-control shadow-none mb-3" value="<?php echo $user['department']; ?>" required>
+                    
+                    <input placeholder="Lastname" name="emailtwo" class="form-control shadow-none mb-3" value="<?php echo $user['email']; ?>" required>
+                </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" name="submit_note" data-bs-dismiss="modal">Save changes</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
                  <?php endforeach; ?>
             </table>   
         </div>
